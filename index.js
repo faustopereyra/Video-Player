@@ -5,7 +5,7 @@ const app = require("express")();
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
 app.get("/app.js", (req, res) => res.sendFile(__dirname + "/app.js"))
 app.get("/style.css", (req, res) => res.sendFile(__dirname + "/style.css"))
-app.listen(3001, () => console.log("listening on http port 3001"))
+app.listen(3001, () => console.log(`listening on http port 3001`))
 
 const WebSocketServer = require("websocket").server
 const httpserver = http.createServer()
