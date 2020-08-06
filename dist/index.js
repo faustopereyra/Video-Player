@@ -3,8 +3,8 @@ const app = require("express")();
 
 // Set Up servers
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
-app.get("/app.js", (req, res) => res.sendFile(__dirname + "/app.js"))
-app.get("/style.css", (req, res) => res.sendFile(__dirname + "/style.css"))
+app.get("/app.479f0e98.js", (req, res) => res.sendFile(__dirname + "/app.479f0e98.js"))
+app.get("/style.bbb7f747.css", (req, res) => res.sendFile(__dirname + "/style.bbb7f747.css"))
 app.listen(3001, () => console.log("listening on http port 3001"))
 
 const WebSocketServer = require("websocket").server
@@ -31,6 +31,7 @@ wsServer.on("request", request => {
     connection.on("close", () => console.log("Closed"));
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data)
+        console.log(result)
         //Server Received a message from the client
 
         //a user stops/play
@@ -56,6 +57,8 @@ wsServer.on("request", request => {
 
     //send back the client connect
     connection.send(JSON.stringify(payLoad))
+
+    console.log(Object.keys(clients))
 
 })
 

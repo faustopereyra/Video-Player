@@ -16,25 +16,25 @@ const fullscreenBtn = document.querySelector(".fullscreen");
 //Server Logic
 
 let clientId = null;
+const state = {}
 
 let ws = new WebSocket("ws://localhost:3000/")
 
 
 const togglePlay = () => {
-    let state
 
-    video.paused ? state = true : state = false;
+    let play = video.paused ? true : false;
 
     const payload = {
         "method": "togglePlay",
-        "play": state,
-        "clientId": clientId
+        "state": {
+            ...state,
+            play: play
+        }
     }
 
     ws.send(JSON.stringify(payload))
 }
-
-
 
 //Get Server Data
 ws.onmessage = message => {
@@ -48,23 +48,27 @@ ws.onmessage = message => {
 
     //update
     if (response.method === "update") {
-        const play = response.play
-
-        if (play) {
-            video.play();
-            playBtn.classList.replace("fa-play", "fa-pause");
-            playBtn.setAttribute("title", "Pause")
-        } else {
-            video.pause();
-            playBtn.classList.replace("fa-pause", "fa-play");
-            playBtn.setAttribute("title", "play");
-        }
+        state.play = response.state.play
+        updatePlay()
     }
 }
 
 
 //Client Logic
 
+//Update Play
+
+const updatePlay = () => {
+    if (state.play) {
+        video.play();
+        playBtn.classList.replace("fa-play", "fa-pause");
+        playBtn.setAttribute("title", "Pause")
+    } else {
+        video.pause();
+        playBtn.classList.replace("fa-pause", "fa-play");
+        playBtn.setAttribute("title", "play");
+    }
+}
 
 // Progress Bar 
 const displayTime = (time) => {
