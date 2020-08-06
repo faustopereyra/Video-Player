@@ -17,6 +17,7 @@ httpserver.listen(3000, () => console.log("listening on http port 3000"))
 
 // State
 const clients = {};
+let play = true
 
 const wsServer = new WebSocketServer({
     "httpServer": httpserver
@@ -31,11 +32,14 @@ wsServer.on("request", request => {
     connection.on("close", () => console.log("Closed"));
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data)
+        console.log(result)
         //Server Received a message from the client
 
         //a user stops/play
-        if (result.method === "play") {
-            //Change Play 
+        if (result.method === "togglePlay") {
+            console.log("activo")
+            play = result.play
+            updatePlayerState()
         }
 
     })
@@ -57,18 +61,18 @@ wsServer.on("request", request => {
     connection.send(JSON.stringify(payLoad))
 
     console.log(Object.keys(clients))
-    updatePlayerState()
+
 })
 
 
 function updatePlayerState() {
 
-
+    console.log(play)
     for (let client of Object.keys(clients)) {
 
         const payLoad = {
             "method": "update",
-            "play": null
+            "play": play
         }
 
         clients[client].connection.send(JSON.stringify(payLoad))
