@@ -8,12 +8,41 @@
 </head>
 
 <body>
+    <button id="play-btn"></button>
     <script>
+
+
+        let clientId = null;
+
         let ws = new WebSocket("ws://localhost:3000/")
+
+        //Save Elements
+        const playBtn = document.getElementById("play-btn")
+
+        playBtn.addEventListener("click", e => {
+
+            const payload = {
+                "method": togglePlay,
+                "clientId": clientId
+            }
+
+            ws.send(JSON.stringify(payload))
+        })
         ws.onmessage = message => {
             const response = JSON.parse(message.data);
-            console.log(response)
+
+            //conect
+            if (response.method === "connect") {
+                clientId = response.clientId;
+                console.log("Client id Set successfully " + clientId)
+            }
+
+            //update
+            if (response.method === "update") {
+                //code...
+            }
         }
+
     </script>
 </body>
 

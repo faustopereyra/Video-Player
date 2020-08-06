@@ -5,36 +5,81 @@ app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
 app.listen(3001, () => console.log("listening on http port 3001"))
 
 const WebSocketServer = require("websocket").server
-let connection = null
+const httpserver = http.createServer()
 
-//Create Server
-const httpserver = http.createServer((req, res) => {
-    console.log("request");
-})
+//Listen to port 3000
+httpserver.listen(3000, () => console.log("listening on http port 3000"))
+
+
+
 
 // State
-const VideoSettings = {}
+const clients = {};
 
 const wsServer = new WebSocketServer({
     "httpServer": httpserver
 })
 
-//Handle Connection
 
+//Handle Connection
 wsServer.on("request", request => {
     //User Connect
-    connection = request.accept(null, request.origin);
-    connection.on("open", () => console.log("open"));
-    connection.on("close", () => console.log("close"));
+    const connection = request.accept(null, request.origin);
+    connection.on("open", () => console.log("Opened"));
+    connection.on("close", () => console.log("Closed"));
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data)
         //Server Received a message from the client
 
-        console.log(result)
+        //a user stops/play
+        if (result.method === "play") {
+            //Change Play 
+        }
+
     })
 
+    //generate a new clientId
+    const clientId = guid();
+    clients[clientId] = {
+        "connection": connection
+    }
+
+    const payLoad = {
+        "method": "connect",
+        "clientId": clientId
+    }
+
+
+
+    //send back the client connect
+    connection.send(JSON.stringify(payLoad))
+
+    console.log(Object.keys(clients))
+    updatePlayerState()
 })
 
 
-//Listen to port 3000
-httpserver.listen(3000, () => console.log("listening on http port 3000"))
+function updatePlayerState() {
+
+
+    for (let client of Object.keys(clients)) {
+
+        const payLoad = {
+            "method": "update",
+            "play": null
+        }
+
+        clients[client].connection.send(JSON.stringify(payLoad))
+    }
+
+    setTimeout(updatePlayerState, 500);
+}
+
+
+
+function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+}
+
+// then to call it, plus stitch in '4' in the third group
+const guid = () => (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
