@@ -23,7 +23,7 @@ To simulate multiple clients, open the website on different tabs.
 ```bash
 npm run build
 ```
-Parse files ar located on the "dist" folder.
+Parse files are located on the "dist" folder.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
