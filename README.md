@@ -3,7 +3,7 @@ Video player
 
 ## Installation
 
-Use the package manager [npm](https://www.npmjs.com/) to install Notify.
+Use the package manager [npm](https://www.npmjs.com/) to install Video player.
 
 ```bash
 npm install 
